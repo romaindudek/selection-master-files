@@ -2,7 +2,7 @@
 
 If you take a lot of photos when you shoot and you want to keep the original picture you are working on, it can sometimes be painfull...
 
-And if you let time pass between the shooting and post production work, you might sometimes forget wich pictures you've allready worked on in your Master directory... Wich is annoying if you have to compare the two dirs yourself when you have more than 20 files in Master dir an hundreds in source dir.
+And if you let time pass between the shooting and post production work, you might sometimes forget wich pictures you've allready worked on in your Master directory... Wich is annoying if you have to compare the two dirs yourself when you have more than 20 files in Master dir an hundreds in Source dir.
 
 ## Usage
 
@@ -32,27 +32,21 @@ Shooting_2023-02-08/
 │   ├── PGX_0433.RW2
 │   └── PGX_0434.RW2
 ├── (...)
-├── PGX_0419.JPG
-├── PGX_0420.JPG
-├── PGX_0421.JPG
-├── PGX_0422.JPG
 ├── PGX_0427.JPG
 ├── PGX_0428.JPG
 ├── PGX_0430.JPG
 ├── PGX_0431.JPG
 ├── PGX_0432.JPG
+├── PGX_0435.JPG
 ├── (...)
 ├── RAW
 │   ├── (...)
-│   ├── PGX_0419.RW2
-│   ├── PGX_0420.RW2
-│   ├── PGX_0421.RW2
-│   ├── PGX_0422.RW2
 │   ├── PGX_0427.RW2
 │   ├── PGX_0428.RW2
 │   ├── PGX_0430.RW2
 │   ├── PGX_0431.RW2
 │   ├── PGX_0432.RW2
+│   ├── PGX_0435.RW2
 │   └── (...)
 └── Selection
     ├── PGX_0429.JPG
