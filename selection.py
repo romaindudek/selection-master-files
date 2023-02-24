@@ -85,7 +85,8 @@ if __name__ == '__main__':
     JPG_files = glob.glob(os.path.join(source, '*.JPG'))
     png_files = glob.glob(os.path.join(source, '*.png'))
     PNG_files = glob.glob(os.path.join(source, '*.PNG'))
-    files = jpg_files + JPG_files + png_files + PNG_files
+    RAW_files = glob.glob(os.path.join(source, '*.RW2'))
+    files = jpg_files + JPG_files + png_files + PNG_files + RAW_files
 
     # files = glob.glob(os.path.join(source, '*.JPG'))
     print(f"Found {len(files)} files in {source}")
@@ -96,7 +97,8 @@ if __name__ == '__main__':
     JPG_files = glob.glob(os.path.join(masters, '*.JPG'))
     png_files = glob.glob(os.path.join(masters, '*.png'))
     PNG_files = glob.glob(os.path.join(masters, '*.PNG'))
-    master_files = jpg_files + JPG_files + png_files + PNG_files
+    RAW_files = glob.glob(os.path.join(source, '*.RW2'))
+    master_files = jpg_files + JPG_files + png_files + PNG_files + RAW_files
 
     
     # compare files in source and master
