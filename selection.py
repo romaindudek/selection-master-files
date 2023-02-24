@@ -30,7 +30,14 @@ __help__ = f"""
         -m, --masters   Master directory (optional, default: <Source directory>/Masters)
         -d, --dest      Destination directory (Default: <Source directory>/Selection)
 """
-IMAGES_EXTENSIONS = ['.jpg', '.JPG', '.png', '.PNG', '.rw2', '.RW2']
+
+images_extensions =[ ".JPG", ".PNG", ".GIF", ".BMP", ".TIFF", ".TIF"]
+images_extensions_low = [ext.lower() for ext in images_extensions]
+
+raw_extensions = [".NEF", ".CR2", ".ARW", ".ORF", ".RW2", ".PEF"]
+raw_extensions_low = [ext.lower() for ext in raw_extensions]
+
+IMAGES_EXTENSIONS = images_extensions + images_extensions_low + raw_extensions + raw_extensions_low
 
 def get_any_image_in_directory(source):
     output = []
@@ -132,7 +139,8 @@ if __name__ == '__main__':
             if verbose:
                 print(f"\nMoving {file_name} to {destfile}")
             os.rename(file, destfile)
-            
+    if verbose:
+        print()
     # done
-    print('\nDone')
+    print('Done')
     
