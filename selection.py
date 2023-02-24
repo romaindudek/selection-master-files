@@ -3,6 +3,7 @@
 import sys
 import os
 import glob
+from time import sleep
 
 # grab current directory
 
@@ -22,12 +23,20 @@ __help__ = f"""
     
     Options:
         -h, --help      Show this help message
+        -v, --verbose   Verbose mode
 
     Args:
         -s, --source    Source directory
         -m, --masters   Master directory (optional, default: <Source directory>/Masters)
         -d, --dest      Destination directory (Default: <Source directory>/Selection)
 """
+IMAGES_EXTENSIONS = ['.jpg', '.JPG', '.png', '.PNG', '.rw2', '.RW2']
+
+def get_any_image_in_directory(source):
+    output = []
+    for extension in IMAGES_EXTENSIONS:
+        output += glob.glob(os.path.join(source, f'*{extension}'))
+    return output
 
 if __name__ == '__main__':
 
@@ -65,6 +74,12 @@ if __name__ == '__main__':
     else:
         dest = os.path.join(source, 'Selection')
 
+    # check for verbose
+    if '-v' in args or '--verbose' in args:
+        verbose = True
+    else:
+        verbose = False
+
     # check if source exists
     if not os.path.exists(source):
         print('ERROR: Source directory does not exist')
@@ -81,29 +96,22 @@ if __name__ == '__main__':
 
     # get the files in the source directory
     # extension can be any image exension
-    jpg_files = glob.glob(os.path.join(source, '*.jpg'))
-    JPG_files = glob.glob(os.path.join(source, '*.JPG'))
-    png_files = glob.glob(os.path.join(source, '*.png'))
-    PNG_files = glob.glob(os.path.join(source, '*.PNG'))
-    RAW_files = glob.glob(os.path.join(source, '*.RW2'))
-    files = jpg_files + JPG_files + png_files + PNG_files + RAW_files
-
-    # files = glob.glob(os.path.join(source, '*.JPG'))
-    print(f"Found {len(files)} files in {source}")
+    source_files = get_any_image_in_directory(source)
+    if verbose:
+        print(f"Found {len(source_files)} files in {source}")
 
     # get the files in the master directory
-    #master_files = glob.glob(os.path.join(masters, '*.jpg')) + glob.glob(os.path.join(masters, '*.JPG'))
-    jpg_files = glob.glob(os.path.join(masters, '*.jpg'))
-    JPG_files = glob.glob(os.path.join(masters, '*.JPG'))
-    png_files = glob.glob(os.path.join(masters, '*.png'))
-    PNG_files = glob.glob(os.path.join(masters, '*.PNG'))
-    RAW_files = glob.glob(os.path.join(source, '*.RW2'))
-    master_files = jpg_files + JPG_files + png_files + PNG_files + RAW_files
+    master_files = get_any_image_in_directory(masters)
+    if verbose:
+        print(f"Found {len(master_files)} files in {masters}")
 
     
     # compare files in source and master
-    # if files are in master and in source, move source file to destination
-    for file in files:
+    # if files are in master and in source, 
+    # move source file to destination
+    if verbose:
+        print("Checking ")
+    for file in source_files:
         # filename with extension
         file_name = os.path.basename(file)
         # filename lower case and no extension
@@ -111,7 +119,9 @@ if __name__ == '__main__':
         master_files_names = [os.path.basename(f).lower().split('.')[0] for f in master_files]
         # master_files_names unique
         master_files_names = list(set(master_files_names))
-        print(f"Checking {file_name}")
+        if verbose:
+            print(f"{file_name}", end='\r')
+            sleep(.02)
         copy = False
         for master_file_name in master_files_names:
             if file_name_stip in master_file_name:
@@ -119,9 +129,10 @@ if __name__ == '__main__':
                 break
         if copy:
             destfile = os.path.join(dest, file_name)
-            print(f"Moving {file_name} to {destfile}")
+            if verbose:
+                print(f"\nMoving {file_name} to {destfile}")
             os.rename(file, destfile)
             
     # done
-    print('Done')
+    print('\nDone')
     
