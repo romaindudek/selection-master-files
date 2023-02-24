@@ -8,7 +8,7 @@ from time import sleep
 # grab current directory
 
 __author__ = 'Romain Dudek'
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 __date__ = '2023-02-01'
 __license__ = 'MIT'
 __description__ = "Check if Source images files (from a Source directory)\n        are in a Master directory, and copy them to a Selection directory"
