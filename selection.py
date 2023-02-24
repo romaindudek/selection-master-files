@@ -39,17 +39,23 @@ raw_extensions_low = [ext.lower() for ext in raw_extensions]
 RAW_IMAGES_EXTENSIONS = raw_extensions + raw_extensions_low
  
 
-def get_any_image_in_directory(source, source_raw=None):
+def get_any_image_in_directory(source, source_raw=None, recursive=False):
     """Returns a list of all images in a directory"""
     output = []
     if not source_raw:
         for extension in IMAGES_EXTENSIONS + RAW_IMAGES_EXTENSIONS:
             output += glob.glob(os.path.join(source, f'*{extension}'))
+            if recursive:
+                output += glob.glob(os.path.join(source, f'**/*{extension}'))
     else:
         for extension in IMAGES_EXTENSIONS:
             output += glob.glob(os.path.join(source, f'*{extension}'))
+            if recursive:
+                output += glob.glob(os.path.join(source, f'**/*{extension}'))
         for extension in RAW_IMAGES_EXTENSIONS:
             output += glob.glob(os.path.join(source_raw, f'*{extension}'))
+            if recursive:
+                output += glob.glob(os.path.join(source_raw, f'**/*{extension}'))
     return output
 
 if __name__ == '__main__':
@@ -140,7 +146,7 @@ if __name__ == '__main__':
         print(f"Found {len(source_files)} files in {source}")
 
     # get the files in the master directory
-    master_files = get_any_image_in_directory(masters)
+    master_files = get_any_image_in_directory(masters, recursive=True)
     if verbose:
         print(f"Found {len(master_files)} files in {masters}")
 
