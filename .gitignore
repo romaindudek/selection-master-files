@@ -1,0 +1,10 @@
+# mac files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# python compiled files
+*.pyc
+
+# python cache files
+__pycache__/
