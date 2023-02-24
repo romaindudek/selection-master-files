@@ -5,8 +5,6 @@ import os
 import glob
 from time import sleep
 
-# grab current directory
-
 __author__ = 'Romain Dudek'
 __version__ = '1.0.1'
 __date__ = '2023-02-01'
@@ -42,6 +40,7 @@ RAW_IMAGES_EXTENSIONS = raw_extensions + raw_extensions_low
  
 
 def get_any_image_in_directory(source, source_raw=None):
+    """Returns a list of all images in a directory"""
     output = []
     if not source_raw:
         for extension in IMAGES_EXTENSIONS + RAW_IMAGES_EXTENSIONS:
@@ -119,7 +118,7 @@ if __name__ == '__main__':
             print(f"Creating {dest}")
         os.makedirs(dest)
     
-    # check if raw directory exists
+    # check if raw directories exists and create dest_raw if needed
     if raw_dir_name:
         source_raw = os.path.join(source, raw_dir_name)
         if not os.path.exists(source_raw):
@@ -136,7 +135,6 @@ if __name__ == '__main__':
         dest_raw = None
             
     # get the files in the source directory
-    # extension can be any image exension
     source_files = get_any_image_in_directory(source, source_raw)
     if verbose:
         print(f"Found {len(source_files)} files in {source}")
@@ -162,6 +160,7 @@ if __name__ == '__main__':
         master_files_names = list(set(master_files_names))
         if verbose:
             print(f"{file_name}", end='\r')
+            # slows the printing down to make it easier to see what's going on
             sleep(.01)
         copy = False
         for master_file_name in master_files_names:
