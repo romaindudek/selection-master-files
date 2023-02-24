@@ -26,23 +26,31 @@ __help__ = f"""
         -v, --verbose   Verbose mode
 
     Args:
-        -s, --source    Source directory
-        -m, --masters   Master directory (optional, default: <Source directory>/Masters)
-        -d, --dest      Destination directory (Default: <Source directory>/Selection)
+        -s, --source        Source directory
+        -m, --masters       Master directory (optional, default: <Source directory>/Masters)
+        -d, --dest          Destination directory (optional, default: <Source directory>/Selection)
+        -rd, --raw-dir      Separate raw directory (optional, relative to Source directory, no default)
 """
 
 images_extensions =[ ".JPG", ".PNG", ".GIF", ".BMP", ".TIFF", ".TIF"]
 images_extensions_low = [ext.lower() for ext in images_extensions]
+IMAGES_EXTENSIONS = images_extensions + images_extensions_low
 
 raw_extensions = [".NEF", ".CR2", ".ARW", ".ORF", ".RW2", ".PEF"]
 raw_extensions_low = [ext.lower() for ext in raw_extensions]
+RAW_IMAGES_EXTENSIONS = raw_extensions + raw_extensions_low
+ 
 
-IMAGES_EXTENSIONS = images_extensions + images_extensions_low + raw_extensions + raw_extensions_low
-
-def get_any_image_in_directory(source):
+def get_any_image_in_directory(source, source_raw=None):
     output = []
-    for extension in IMAGES_EXTENSIONS:
-        output += glob.glob(os.path.join(source, f'*{extension}'))
+    if not source_raw:
+        for extension in IMAGES_EXTENSIONS + RAW_IMAGES_EXTENSIONS:
+            output += glob.glob(os.path.join(source, f'*{extension}'))
+    else:
+        for extension in IMAGES_EXTENSIONS:
+            output += glob.glob(os.path.join(source, f'*{extension}'))
+        for extension in RAW_IMAGES_EXTENSIONS:
+            output += glob.glob(os.path.join(source_raw, f'*{extension}'))
     return output
 
 if __name__ == '__main__':
@@ -87,6 +95,14 @@ if __name__ == '__main__':
     else:
         verbose = False
 
+    # check for raw directory
+    if '-rd' in args:
+        raw_dir_name = args[args.index('-rd') + 1]
+    elif '--raw-dir' in args:
+        raw_dir_name = args[args.index('--raw-dir') + 1]
+    else:
+        raw_dir_name = None
+
     # check if source exists
     if not os.path.exists(source):
         print('ERROR: Source directory does not exist')
@@ -99,11 +115,29 @@ if __name__ == '__main__':
 
     # check if destination exists
     if not os.path.exists(dest):
+        if verbose:
+            print(f"Creating {dest}")
         os.makedirs(dest)
-
+    
+    # check if raw directory exists
+    if raw_dir_name:
+        source_raw = os.path.join(source, raw_dir_name)
+        if not os.path.exists(source_raw):
+            print('ERROR: RAW directory does not exist')
+            sys.exit(1)
+        else:
+            dest_raw = os.path.join(dest, raw_dir_name)
+            if not os.path.exists(dest_raw):
+                if verbose:
+                    print(f"Creating {dest_raw}")
+                os.makedirs(dest_raw)
+    else:
+        source_raw = None
+        dest_raw = None
+            
     # get the files in the source directory
     # extension can be any image exension
-    source_files = get_any_image_in_directory(source)
+    source_files = get_any_image_in_directory(source, source_raw)
     if verbose:
         print(f"Found {len(source_files)} files in {source}")
 
@@ -128,14 +162,18 @@ if __name__ == '__main__':
         master_files_names = list(set(master_files_names))
         if verbose:
             print(f"{file_name}", end='\r')
-            sleep(.02)
+            sleep(.01)
         copy = False
         for master_file_name in master_files_names:
             if file_name_stip in master_file_name:
                 copy = True
                 break
         if copy:
-            destfile = os.path.join(dest, file_name)
+            filename_ext = os.path.splitext(file_name)[1]
+            if filename_ext in RAW_IMAGES_EXTENSIONS and dest_raw is not None:
+                destfile = os.path.join(dest_raw, file_name)
+            else:
+                destfile = os.path.join(dest, file_name)
             if verbose:
                 print(f"\nMoving {file_name} to {destfile}")
             os.rename(file, destfile)
